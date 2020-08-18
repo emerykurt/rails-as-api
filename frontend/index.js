@@ -3,6 +3,7 @@ const itemForm = document.getElementById('item-form')
 const itemPrice = document.getElementById('item-price')
 const itemDescription = document.getElementById('item-description')
 const itemName = document.getElementById('item-name')
+const itemQuantity = document.getElementById('item-quantity')
 
 function fetchItems(){
     fetch('http://localhost:3000/items')
@@ -23,8 +24,10 @@ function addItemToDom(item){
         $<span class="price">${item.attributes.price}</span>
         <strong class="name">${item.attributes.name}</strong>:
         <span class="description">${item.attributes.description}</span>
+        <span class="quantity">${item.attributes.quantity}</span>
         </li>
         <button class="delete" data-id="${item.id}">Delete</button>
+        <button class="edit" data-id="${item.id}">Edit</button>
     </div>`
 }
 
@@ -34,7 +37,8 @@ function handleFormSubmit(e){
     let newItemObj = {
         name: itemName.value,
         description: itemDescription.value,
-        price: itemPrice.value
+        price: itemPrice.value,
+        quantity: itemQuantity.value
     }
 
     let configObj = {
@@ -55,6 +59,7 @@ function handleFormSubmit(e){
 
     itemForm.reset()
 }
+
 
 function deleteItem(id){
 // remove from db
@@ -77,12 +82,24 @@ function deleteItem(id){
 // optimistic rendering
     let item = document.getElementById(`item-${id}`)
     item.remove()
+    console.log("Removed Item!")
+}
+
+function editItem(editButton){
+    if (editButton.innerText === "Edit"){
+        editButton.innerText = "Save"
+    }else{
+        editButton.innerText = "Edit"
+    }
 }
 
 function handleListClick(e){
    if (e.target.className === "delete"){
        let id = e.target.dataset.id
         deleteItem(id)
+   } else if (e.target.className === "edit"){
+       let id = e.target.dataset.id
+       editItem(e.target)
    }
 }
 
